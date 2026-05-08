@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#fbc0e9">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="🐰murmurs">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="description" content="故事板分镜工具 - 灵感卡片管理">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%23fbc0e9' width='180' height='180' rx='40'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' font-size='90'>🐰</text></svg>">
+    <link rel="stylesheet" href="styles.css">
+    <title>🐰murmurs</title>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="mode-buttons">
+                <button class="mode-btn" data-mode="murmurs" title="murmurs">🐰</button>
+                <button class="mode-btn" data-mode="scene" title="Scene Deck">📝</button>
+                <button class="mode-btn" data-mode="script" title="Script">🎬</button>
+                <button class="mode-btn" data-mode="flash" title="Flash">💥</button>
+            </div>
+        </div>
+
+        <!-- murmurs 模式 -->
+        <div id="murmurs-creation" class="creation-mode">
+            <div class="creation-area">
+                <div class="mode-title">🐰murmurs</div>
+                <div class="card-flip" id="murmursCard">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="card-label">关键词 / 标签</div>
+                            <textarea id="murmursKeyword" placeholder="输入关键词或标签..."></textarea>
+                            <div class="flip-hint">点击翻转到背面</div>
+                        </div>
+                        <div class="card-back">
+                            <div class="card-label">内容</div>
+                            <textarea id="murmursContent" placeholder="输入内容..."></textarea>
+                            <div class="flip-hint">点击翻转到正面</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="buttons">
+                    <button class="btn" onclick="createCard('murmurs')">创建卡片</button>
+                    <button class="btn" onclick="showBoard('murmurs')">看板模式</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scene Deck 模式 -->
+        <div id="scene-creation" class="creation-mode hidden">
+            <div class="creation-area">
+                <div class="mode-title">📝Scene Deck</div>
+                <div class="card-flip" id="sceneCard">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="card-label">关键词 / 场景</div>
+                            <textarea id="sceneKeyword" placeholder="输入关键词或场景..."></textarea>
+                            <div class="flip-hint">点击翻转到背面</div>
+                        </div>
+                        <div class="card-back">
+                            <div class="card-label">内容</div>
+                            <textarea id="sceneContent" placeholder="输入内容..."></textarea>
+                            <div class="flip-hint">点击翻转到正面</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="buttons">
+                    <button class="btn" onclick="createCard('scene')">创建卡片</button>
+                    <button class="btn" onclick="showBoard('scene')">看板模式</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Script 模式 -->
+        <div id="script-creation" class="creation-mode hidden">
+            <div class="creation-area">
+                <div class="mode-title">🎬Script</div>
+                <div class="card-flip" id="scriptCard">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="card-label">场景核心</div>
+                            <textarea id="scriptKeyword" placeholder="发生了什么？"></textarea>
+                            <div class="flip-hint">点击翻转到背面</div>
+                        </div>
+                        <div class="card-back">
+                            <div class="card-label">画面叙事</div>
+                            <textarea id="scriptContent" placeholder="给此刻的画面定调…"></textarea>
+                            <div class="flip-hint">点击翻转到正面</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="buttons">
+                    <button class="btn" onclick="createCard('script')">创建卡片</button>
+                    <button class="btn" onclick="showBoard('script')">看板模式</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flash 模式 -->
+        <div id="flash-creation" class="creation-mode hidden">
+            <div class="creation-area">
+                <div class="mode-title">💥Flash</div>
+                <div class="card-flip" id="flashCard">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="card-label">关键词 / 场景</div>
+                            <textarea id="flashKeyword" placeholder="输入关键词或场景..."></textarea>
+                            <div class="flip-hint">点击翻转到背面</div>
+                        </div>
+                        <div class="card-back">
+                            <div class="card-label">内容</div>
+                            <textarea id="flashContent" placeholder="输入内容..."></textarea>
+                            <div class="flip-hint">点击翻转到正面</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="buttons">
+                    <button class="btn" onclick="createCard('flash')">创建卡片</button>
+                    <button class="btn" onclick="showBoard('flash')">看板模式</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- murmurs/Scene Deck/Flash 看板 -->
+        <div class="storyboard" id="storyboard">
+            <div class="board-header">
+                <div class="board-title" id="boardTitle">📋 看板</div>
+                <button class="back-btn" onclick="hideBoard()">返回创建</button>
+            </div>
+            <div class="cards-grid" id="cardsGrid"></div>
+            <div class="hint-text">长按卡片可拖拽排序</div>
+        </div>
+
+        <!-- Script 看板 -->
+        <div class="script-board" id="scriptBoard">
+            <div class="board-header">
+                <div class="board-title">🎬 Script 看板</div>
+                <button class="back-btn" onclick="hideBoard()">返回创建</button>
+            </div>
+            <div class="script-cards-grid" id="scriptCardsGrid">
+                <svg class="script-connections" id="connectionsSvg"></svg>
+            </div>
+            <div class="hint-text">拖拽卡片自由排列</div>
+        </div>
+    </div>
+
+    <script>
+        // 数据存储
+        const cardsData = {
+            murmurs: [],
+            scene: [],
+            script: [],
+            flash: []
+        };
+
+        let currentMode = 'murmurs';
+        let draggedItem = null;
+        let dragStartPos = 0;
+        let isDragging = false;
+        let dragTimeout = null;
+        
+        // 背景色配置
+        const backgroundColors = {
+            murmurs: ['#fbc0e9', '#fccbbe'],
+            scene: ['#dafbe0', '#ffffff'],
+            script: ['#2e3132', '#e4f0ff'],
+            flash: ['#fef4c0', '#e4f0ff']
+        };
+        let colorIndex = 0;
+
+        // 初始化模式按钮
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const mode = btn.dataset.mode;
+                switchMode(mode);
+            });
+        });
+
+        // 初始化卡片翻转
+        ['murmurs', 'scene', 'script', 'flash'].forEach(mode => {
+            const card = document.getElementById(mode + 'Card');
+            if (card) {
+                card.addEventListener('click', function(e) {
+                    if (e.target.tagName !== 'TEXTAREA') {
+                        card.classList.toggle('flipped');
+                    }
+                });
+            }
+        });
+
+        function switchMode(mode) {
+            currentMode = mode;
+            colorIndex = 0;
+            
+            // 更新按钮状态
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.mode === mode);
+            });
+
+            // 隐藏所有创建区域
+            document.querySelectorAll('.creation-mode').forEach(el => {
+                el.classList.add('hidden');
+            });
+
+            // 隐藏所有看板
+            document.getElementById('storyboard').classList.remove('active');
+            document.getElementById('scriptBoard').classList.remove('active');
+
+            // 显示当前模式的创建区域
+            document.getElementById(mode + '-creation').classList.remove('hidden');
+            
+            // 设置背景色
+            updateBackgroundColor();
+        }
+        
+        function updateBackgroundColor() {
+            document.body.style.background = backgroundColors[currentMode][colorIndex];
+        }
+        
+        function toggleBackgroundColor() {
+            colorIndex = (colorIndex + 1) % 2;
+            updateBackgroundColor();
+        }
+        
+        // 点击背景切换颜色
+        document.addEventListener('click', function(e) {
+            if (e.target === document.body) {
+                toggleBackgroundColor();
+            }
+        });
+
+        function createCard(mode) {
+            const keywordInput = document.getElementById(mode + 'Keyword');
+            const contentInput = document.getElementById(mode + 'Content');
+            
+            const keyword = keywordInput.value.trim();
+            const content = contentInput.value.trim();
+            
+            if (keyword || content) {
+                cardsData[mode].push({
+                    id: Date.now(),
+                    keyword: keyword,
+                    content: content,
+                    date: new Date().toLocaleDateString('zh-CN')
+                });
+                
+                keywordInput.value = '';
+                contentInput.value = '';
+                
+                // 翻转回正面
+                const card = document.getElementById(mode + 'Card');
+                if (card) card.classList.remove('flipped');
+                
+                alert('卡片已创建！');
+            }
+        }
+
+        function showBoard(mode) {
+            if (mode === 'script') {
+                document.getElementById('scriptBoard').classList.add('active');
+                renderScriptBoard();
+            } else {
+                document.getElementById('storyboard').classList.add('active');
+                const titles = {
+                    murmurs: '🐰 murmurs 看板',
+                    scene: '📝 Scene Deck 看板',
+                    flash: '💥 Flash 看板'
+                };
+                document.getElementById('boardTitle').textContent = titles[mode];
+                renderStandardBoard(mode);
+            }
+            
+            // 隐藏创建区域
+            document.querySelectorAll('.creation-mode').forEach(el => {
+                el.classList.add('hidden');
+            });
+        }
+
+        function hideBoard() {
+            document.getElementById('storyboard').classList.remove('active');
+            document.getElementById('scriptBoard').classList.remove('active');
+            document.getElementById(currentMode + '-creation').classList.remove('hidden');
+        }
+
+        function renderStandardBoard(mode) {
+            const grid = document.getElementById('cardsGrid');
+            const cards = cardsData[mode];
+            
+            if (cards.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1/-1;">
+                        <div class="empty-state-icon">📝</div>
+                        <div class="empty-state-text">还没有创建任何卡片</div>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = '';
+            cards.forEach((card, index) => {
+                const cardEl = document.createElement('div');
+                cardEl.className = 'story-card';
+                cardEl.dataset.index = index;
+                
+                cardEl.innerHTML = `
+                    <button class="delete-btn" onclick="deleteCard('${mode}', ${card.id})">×</button>
+                    <div class="card-content">${escapeHtml(card.content) || '<span style="color: #ccc;">暂无内容</span>'}</div>
+                    <div class="card-title">${escapeHtml(card.keyword.split('\n')[0] || '未命名')}</div>
+                    <div class="card-date">${card.date}</div>
+                `;
+                
+                grid.appendChild(cardEl);
+
+                // 拖拽事件
+                cardEl.addEventListener('mousedown', function(e) {
+                    if (e.target.classList.contains('delete-btn')) return;
+                    
+                    dragStartPos = index;
+                    draggedItem = cardEl;
+                    
+                    dragTimeout = setTimeout(function() {
+                        isDragging = true;
+                        cardEl.classList.add('dragging');
+                    }, 200);
+                });
+            });
+        }
+
+        function renderScriptBoard() {
+            const grid = document.getElementById('scriptCardsGrid');
+            const cards = cardsData.script;
+            
+            if (cards.length === 0) {
+                grid.innerHTML = `<svg class="script-connections" id="connectionsSvg"></svg>`;
+                const emptyState = document.createElement('div');
+                emptyState.innerHTML = `
+                    <div class="empty-state" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                        <div class="empty-state-icon">🎬</div>
+                        <div class="empty-state-text">还没有创建任何场景</div>
+                    </div>
+                `;
+                grid.appendChild(emptyState);
+                return;
+            }
+
+            grid.innerHTML = `<svg class="script-connections" id="connectionsSvg"></svg>`;
+            
+            // 计算卡片位置（脑图式布局）
+            const gridWidth = grid.offsetWidth;
+            const gridHeight = grid.offsetHeight;
+            const cardWidth = 280;
+            const cardHeight = 220;
+            
+            cards.forEach((card, index) => {
+                // 如果没有位置信息，生成圆形布局
+                if (!card.x || !card.y) {
+                    const angle = (index / cards.length) * Math.PI * 2;
+                    const radius = Math.min(gridWidth, gridHeight) * 0.3;
+                    const centerX = gridWidth / 2;
+                    const centerY = gridHeight / 2;
+                    card.x = centerX + Math.cos(angle) * radius - cardWidth / 2;
+                    card.y = centerY + Math.sin(angle) * radius - cardHeight / 2;
+                    
+                    // 确保在可见区域内
+                    card.x = Math.max(0, Math.min(card.x, gridWidth - cardWidth));
+                    card.y = Math.max(0, Math.min(card.y, gridHeight - cardHeight));
+                }
+                
+                const cardEl = document.createElement('div');
+                cardEl.className = 'script-card';
+                cardEl.dataset.index = index;
+                cardEl.dataset.id = card.id;
+                cardEl.style.left = card.x + 'px';
+                cardEl.style.top = card.y + 'px';
+                
+                cardEl.innerHTML = `
+                    <button class="delete-btn" onclick="deleteCard('script', ${card.id})" style="position: absolute; top: 10px; right: 10px; z-index: 10;">×</button>
+                    <div class="script-card-image">场景画面</div>
+                    <div class="script-card-content">
+                        <div class="script-card-title">${escapeHtml(card.keyword.split('\n')[0] || '未命名场景')}</div>
+                        <div class="script-card-desc">${escapeHtml(card.content).substring(0, 100)}${card.content.length > 100 ? '...' : ''}</div>
+                    </div>
+                `;
+                
+                grid.appendChild(cardEl);
+
+                // 自由拖拽事件
+                cardEl.addEventListener('mousedown', function(e) {
+                    if (e.target.classList.contains('delete-btn')) return;
+                    
+                    e.preventDefault();
+                    isDragging = true;
+                    draggedItem = cardEl;
+                    dragStartX = e.clientX - cardEl.offsetLeft;
+                    dragStartY = e.clientY - cardEl.offsetTop;
+                    cardEl.classList.add('dragging');
+                    
+                    document.addEventListener('mousemove', scriptDragMove);
+                    document.addEventListener('mouseup', scriptDragEnd);
+                });
+            });
+            
+            drawConnections();
+        }
+        
+        let dragStartX = 0;
+        let dragStartY = 0;
+        
+        function scriptDragMove(e) {
+            if (!isDragging || !draggedItem) return;
+            
+            const grid = document.getElementById('scriptCardsGrid');
+            const gridWidth = grid.offsetWidth;
+            const gridHeight = grid.offsetHeight;
+            const cardWidth = draggedItem.offsetWidth;
+            const cardHeight = draggedItem.offsetHeight;
+            
+            let newX = e.clientX - dragStartX;
+            let newY = e.clientY - dragStartY;
+            
+            // 限制在边界内
+            newX = Math.max(0, Math.min(newX, gridWidth - cardWidth));
+            newY = Math.max(0, Math.min(newY, gridHeight - cardHeight));
+            
+            draggedItem.style.left = newX + 'px';
+            draggedItem.style.top = newY + 'px';
+            
+            // 更新数据中的位置
+            const index = parseInt(draggedItem.dataset.index);
+            cardsData.script[index].x = newX;
+            cardsData.script[index].y = newY;
+            
+            drawConnections();
+        }
+        
+        function scriptDragEnd() {
+            if (draggedItem) {
+                draggedItem.classList.remove('dragging');
+            }
+            isDragging = false;
+            draggedItem = null;
+            document.removeEventListener('mousemove', scriptDragMove);
+            document.removeEventListener('mouseup', scriptDragEnd);
+        }
+        
+        function drawConnections() {
+            const svg = document.getElementById('connectionsSvg');
+            const grid = document.getElementById('scriptCardsGrid');
+            
+            if (!svg || !grid) return;
+            
+            svg.setAttribute('width', grid.offsetWidth);
+            svg.setAttribute('height', grid.offsetHeight);
+            
+            const cards = cardsData.script;
+            if (cards.length < 2) {
+                svg.innerHTML = '';
+                return;
+            }
+            
+            let paths = '';
+            const cardWidth = 280;
+            const cardHeight = 220;
+            
+            for (let i = 0; i < cards.length; i++) {
+                for (let j = i + 1; j < cards.length; j++) {
+                    const x1 = cards[i].x + cardWidth / 2;
+                    const y1 = cards[i].y + cardHeight / 2;
+                    const x2 = cards[j].x + cardWidth / 2;
+                    const y2 = cards[j].y + cardHeight / 2;
+                    
+                    const midX = (x1 + x2) / 2;
+                    const midY = (y1 + y2) / 2;
+                    
+                    paths += `<path class="connection-line" d="M ${x1} ${y1} Q ${midX} ${midY} ${x2} ${y2}" />`;
+                }
+            }
+            
+            svg.innerHTML = paths;
+        }
+
+        function deleteCard(mode, id) {
+            cardsData[mode] = cardsData[mode].filter(c => c.id !== id);
+            if (mode === 'script') {
+                renderScriptBoard();
+            } else {
+                renderStandardBoard(mode);
+            }
+        }
+
+        // 全局拖拽处理
+        document.addEventListener('mousemove', function(e) {
+            if (!draggedItem || !isDragging) return;
+            
+            const grid = currentMode === 'script' ? 
+                document.getElementById('scriptCardsGrid') : 
+                document.getElementById('cardsGrid');
+            
+            const afterElement = getDragAfterElement(grid, e.clientX, e.clientY);
+            if (afterElement == null) {
+                grid.appendChild(draggedItem);
+            } else {
+                grid.insertBefore(draggedItem, afterElement);
+            }
+        });
+
+        document.addEventListener('mouseup', function(e) {
+            clearTimeout(dragTimeout);
+            
+            if (isDragging && draggedItem) {
+                const grid = currentMode === 'script' ? 
+                    document.getElementById('scriptCardsGrid') : 
+                    document.getElementById('cardsGrid');
+                
+                const newIndex = Array.from(grid.children).indexOf(draggedItem);
+                if (newIndex !== dragStartPos && newIndex !== -1) {
+                    const [removed] = cardsData[currentMode].splice(dragStartPos, 1);
+                    cardsData[currentMode].splice(newIndex, 0, removed);
+                    
+                    if (currentMode === 'script') {
+                        renderScriptBoard();
+                    } else {
+                        renderStandardBoard(currentMode);
+                    }
+                }
+                draggedItem.classList.remove('dragging');
+            }
+            
+            draggedItem = null;
+            isDragging = false;
+        });
+
+        function getDragAfterElement(container, x, y) {
+            const draggableElements = [...container.querySelectorAll('.story-card:not(.dragging), .script-card:not(.dragging)')];
+            
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // 默认显示 murmurs 模式
+        switchMode('murmurs');
+        
+        // ========================================
+        // PWA: 注册 Service Worker
+        // ========================================
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('service-worker.js')
+                    .then(function(registration) {
+                        console.log('Service Worker 注册成功:', registration.scope);
+                    })
+                    .catch(function(error) {
+                        console.log('Service Worker 注册失败:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
