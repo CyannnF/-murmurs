@@ -1,0 +1,17 @@
+{
+  "name": "🐰murmurs - 故事板分镜工具",
+  "short_name": "murmurs",
+  "description": "故事板分镜工具 - 灵感卡片管理",
+  "start_url": "/storyboard.html",
+  "display": "standalone",
+  "background_color": "#fbc0e9",
+  "theme_color": "#fbc0e9",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%23fbc0e9' width='180' height='180' rx='40'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' font-size='90'>🐰</text></svg>",
+      "sizes": "180x180",
+      "type": "image/svg+xml"
+    }
+  ]
+}

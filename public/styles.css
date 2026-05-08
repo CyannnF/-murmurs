@@ -1,0 +1,587 @@
+/* ========================================
+   🐰murmurs - 故事板分镜工具
+   样式表
+   ======================================== */
+
+/* 全局重置 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* 页面基础样式 */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    background: #fbc0e9;
+    min-height: 100vh;
+    padding: 30px;
+}
+
+/* 主容器 */
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* 页头 */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+/* 模式切换按钮组 */
+.mode-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.mode-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.8);
+    font-size: 24px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.mode-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    background: white;
+}
+
+.mode-btn.active {
+    background: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* 创建区域 */
+.creation-area {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    margin-bottom: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* 模式标题 */
+.mode-title {
+    text-align: center;
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 30px;
+    font-weight: 500;
+}
+
+/* 卡片翻转容器 */
+.card-flip {
+    width: 320px;
+    height: 420px;
+    perspective: 1000px;
+    margin: 0 auto 30px;
+    cursor: pointer;
+}
+
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
+    transform-style: preserve-3d;
+}
+
+.card-flip.flipped .card-inner {
+    transform: rotateY(180deg);
+}
+
+/* 卡片正反面 */
+.card-front, .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 16px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.card-back {
+    transform: rotateY(180deg);
+}
+
+.card-label {
+    font-size: 13px;
+    color: #667eea;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+/* 文本输入框 */
+textarea {
+    flex: 1;
+    width: 100%;
+    border: none;
+    background: transparent;
+    resize: none;
+    font-size: 16px;
+    line-height: 1.8;
+    color: #333;
+    font-family: inherit;
+}
+
+textarea::placeholder {
+    color: #adb5bd;
+}
+
+textarea:focus {
+    outline: none;
+}
+
+.flip-hint {
+    text-align: center;
+    font-size: 12px;
+    color: #adb5bd;
+    margin-top: auto;
+    font-weight: 400;
+}
+
+/* 按钮组 */
+.buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.btn {
+    padding: 14px 40px;
+    font-size: 15px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    font-family: inherit;
+    background: rgba(181, 212, 252, 0.7);
+    color: #333;
+}
+
+.btn:hover {
+    background: rgba(181, 212, 252, 0.9);
+    transform: translateY(-2px);
+}
+
+/* 标准看板样式 */
+.storyboard {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    display: none;
+}
+
+.storyboard.active {
+    display: block;
+}
+
+.board-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.board-title {
+    font-size: 24px;
+    color: #333;
+    font-weight: 600;
+}
+
+.back-btn {
+    padding: 10px 25px;
+    background: rgba(181, 212, 252, 0.7);
+    color: #333;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.back-btn:hover {
+    background: rgba(181, 212, 252, 0.9);
+}
+
+/* 卡片网格 */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+.story-card {
+    width: 280px;
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e8e8e8;
+    cursor: grab;
+    transition: all 0.2s ease;
+}
+
+.story-card:hover {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.story-card:active {
+    cursor: grabbing;
+}
+
+.story-card.dragging {
+    opacity: 0.6;
+    transform: scale(1.02);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.card-content {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #333;
+    word-wrap: break-word;
+    min-height: 150px;
+    margin-bottom: 15px;
+    white-space: pre-wrap;
+}
+
+.card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.card-date {
+    font-size: 12px;
+    color: #999;
+}
+
+.delete-btn {
+    float: right;
+    background: none;
+    border: none;
+    font-size: 16px;
+    color: #ccc;
+    cursor: pointer;
+    transition: color 0.2s;
+    line-height: 1;
+}
+
+.delete-btn:hover {
+    color: #dc3545;
+}
+
+/* Script 模式看板样式 - 深色背景脑图布局 */
+.script-board {
+    background: #1a1a1a;
+    min-height: calc(100vh - 60px);
+    padding: 40px;
+    border-radius: 16px;
+    display: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.script-board.active {
+    display: block;
+}
+
+.script-board .board-title {
+    color: white;
+}
+
+.script-board .back-btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.script-board .back-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.script-cards-grid {
+    position: relative;
+    width: 100%;
+    height: calc(100vh - 200px);
+    margin-top: 20px;
+}
+
+.script-card {
+    position: absolute;
+    background: #2a2a2a;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: grab;
+    transition: all 0.2s ease;
+    border: 1px solid #3a3a3a;
+    width: 280px;
+    z-index: 10;
+}
+
+.script-card:hover {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border-color: #4a4a4a;
+}
+
+.script-card:active {
+    cursor: grabbing;
+}
+
+.script-card.dragging {
+    opacity: 0.9;
+    transform: scale(1.05);
+    z-index: 100;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+}
+
+.script-card-image {
+    width: 100%;
+    height: 140px;
+    background: linear-gradient(135deg, #333 0%, #444 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    font-size: 12px;
+    position: relative;
+}
+
+.script-card-content {
+    padding: 15px;
+}
+
+.script-card-title {
+    font-size: 14px;
+    color: white;
+    font-weight: 600;
+    margin-bottom: 8px;
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.script-card-desc {
+    font-size: 12px;
+    color: #aaa;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* 连接线 */
+.script-connections {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.connection-line {
+    stroke: rgba(255, 255, 255, 0.1);
+    stroke-width: 1;
+    fill: none;
+}
+
+/* 提示文本 */
+.hint-text {
+    text-align: center;
+    color: #999;
+    font-size: 13px;
+    margin-top: 20px;
+}
+
+.script-board .hint-text {
+    color: #666;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: #999;
+}
+
+.script-board .empty-state {
+    color: #666;
+}
+
+.empty-state-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+}
+
+.empty-state-text {
+    font-size: 18px;
+}
+
+/* 隐藏元素 */
+.hidden {
+    display: none !important;
+}
+
+/* ========================================
+   响应式设计
+   ======================================== */
+
+/* 平板设备 */
+@media (max-width: 1024px) {
+    .container {
+        max-width: 100%;
+        padding: 0 20px;
+    }
+
+    .cards-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .creation-area {
+        padding: 30px;
+    }
+}
+
+/* 手机设备 */
+@media (max-width: 768px) {
+    body {
+        padding: 15px;
+    }
+
+    .header {
+        flex-direction: column;
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .mode-btn {
+        width: 44px;
+        height: 44px;
+        font-size: 20px;
+    }
+
+    .mode-title {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .card-flip {
+        width: 280px;
+        height: 380px;
+    }
+
+    .card-front, .card-back {
+        padding: 20px;
+    }
+
+    textarea {
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .btn {
+        padding: 12px 30px;
+        font-size: 14px;
+    }
+
+    .buttons {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .board-header {
+        flex-direction: column;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .board-title {
+        font-size: 20px;
+    }
+
+    .cards-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .story-card {
+        width: 100%;
+    }
+
+    .script-cards-grid {
+        height: calc(100vh - 250px);
+    }
+
+    .script-card {
+        width: 240px;
+    }
+}
+
+/* 小屏幕手机 */
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+
+    .mode-buttons {
+        gap: 10px;
+    }
+
+    .mode-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+
+    .card-flip {
+        width: 260px;
+        height: 350px;
+    }
+
+    .creation-area {
+        padding: 20px;
+    }
+
+    .script-board {
+        padding: 20px;
+    }
+
+    .script-card {
+        width: 200px;
+    }
+}
